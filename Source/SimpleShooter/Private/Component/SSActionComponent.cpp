@@ -23,7 +23,7 @@ void USSActionComponent::BeginPlay()
 
 	for (const TSubclassOf<USSAction>& ActionClass : DefaultActions)
 	{
-		AddAction(ActionClass);
+		AddAction(GetOwner(), ActionClass);
 	}
 }
 
@@ -57,7 +57,7 @@ bool USSActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* 
 	return Bits;
 }
 
-void USSActionComponent::AddAction(const TSubclassOf<USSAction> ActionClass)
+void USSActionComponent::AddAction(AActor* InInstigator, const TSubclassOf<USSAction> ActionClass)
 {
 	if (!ActionClass)
 	{
@@ -80,7 +80,7 @@ void USSActionComponent::AddAction(const TSubclassOf<USSAction> ActionClass)
 
 	if (NewAction->IsAutoStart() && NewAction->CanStartAction())
 	{
-		NewAction->StartAction(GetOwner());
+		NewAction->StartAction(InInstigator);
 	}
 }
 

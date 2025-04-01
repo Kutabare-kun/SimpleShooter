@@ -30,7 +30,7 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Actions")
-	void AddAction(const TSubclassOf<USSAction> ActionClass);
+	void AddAction(AActor* InInstigator, const TSubclassOf<USSAction> ActionClass);
 
 	UFUNCTION(BlueprintCallable, Category = "Actions")
 	void RemoveAction(USSAction* ActionToRemove);
