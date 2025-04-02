@@ -3,9 +3,10 @@
 
 #include "Component/SSAttributeComponent.h"
 
+#include "SimpleShooterGameMode.h"
+#include "SSLogCategory.h"
 #include "Net/UnrealNetwork.h"
-
-static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("SS.DamageMultiplier"), 1.0f, TEXT("Global Damage Modifier for Attribute Component."), ECVF_Cheat);
+#include "Player/SSPlayerController.h"
 
 USSAttributeComponent::USSAttributeComponent()
 {
@@ -20,12 +21,6 @@ bool USSAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Del
 	if (!GetOwner()->CanBeDamaged() && Delta < 0.0f)
 	{
 		return false;
-	}
-
-	if (Delta < 0.0f)
-	{
-		const float DamageMultiplier = CVarDamageMultiplier.GetValueOnGameThread();
-		Delta *= DamageMultiplier;
 	}
 
 	const float NewHealth = FMath::Clamp(Health + Delta, 0.0f, HealthMax);
@@ -44,14 +39,42 @@ bool USSAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Del
 		{
 			OnDeath(InstigatorActor);
 		}
+
+		if (InstigatorActor != GetOwner())
+		{
+			MakeDamageFeedback(InstigatorActor, ActualDelta);
+		}
 	}
 
 	return ActualDelta != 0;
 }
 
-void USSAttributeComponent::OnDeath(AActor* Instigator)
+void USSAttributeComponent::OnDeath(AActor* Instigator) const
 {
-	// TODO: Implement death logic
+	ASimpleShooterGameMode* GameMode = Cast<ASimpleShooterGameMode>(GetWorld()->GetAuthGameMode());
+	if (!GameMode)
+	{
+		return;
+	}
+
+	GameMode->OnKillActor(GetOwner(), Instigator);
+}
+
+void USSAttributeComponent::MakeDamageFeedback(AActor* Instigator, const float Damage) const
+{
+	const APawn* ThisPawn = Cast<APawn>(Instigator);
+	if (!ThisPawn)
+	{
+		return;
+	}
+
+	ASSPlayerController* PC = Cast<ASSPlayerController>(ThisPawn->GetController());
+	if (!PC)
+	{
+		return;
+	}
+
+	PC->ClientShowDamage(GetOwner(), Damage);
 }
 
 bool USSAttributeComponent::ApplyAmmoChange(const float Delta)

@@ -70,7 +70,9 @@ protected:
 	UFUNCTION()
 	void OnRep_AmmoMax(const float OldAmmoMax);
 
-	void OnDeath(AActor* Instigator);
+	void OnDeath(AActor* Instigator) const;
+
+	void MakeDamageFeedback(AActor* Instigator, const float Damage) const;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")

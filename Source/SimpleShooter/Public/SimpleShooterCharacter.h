@@ -35,6 +35,10 @@ public:
 	virtual FVector GetPawnViewLocation() const override;
 
 protected:
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, USSAttributeComponent* OwningComponent, float Health, float Delta);
+
+protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 
@@ -42,6 +46,8 @@ protected:
 	void ActionInputTagReleased(FGameplayTag InputTag);
 
 protected:
+	virtual void PostInitializeComponents() override;
+
 	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 

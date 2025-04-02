@@ -3,6 +3,8 @@
 
 #include "Input/SSInputConfig.h"
 
+#include "SSLogCategory.h"
+
 const UInputAction* USSInputConfig::FindAbilityInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound) const
 {
 	for (const FSSInputAction& Action : AbilityInputActions)
@@ -15,7 +17,7 @@ const UInputAction* USSInputConfig::FindAbilityInputActionForTag(const FGameplay
 
 	if (bLogNotFound)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Can't find AbilityInputAction for InputTag [%s] on InputConfig [%s]."),
+		SS_LOG(LogTemp, Error, TEXT("Can't find AbilityInputAction for InputTag [%s] on InputConfig [%s]."),
 				*InputTag.ToString(), *GetNameSafe(this));
 	}
 

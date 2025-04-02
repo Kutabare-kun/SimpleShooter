@@ -6,6 +6,8 @@
 #include "GameFramework/HUD.h"
 #include "SSHUD.generated.h"
 
+class USSWidgetController;
+class USSScoreWidgetController;
 class USSUserWidget;
 class USSAttributeWidgetController;
 /**
@@ -17,11 +19,14 @@ class SIMPLESHOOTER_API ASSHUD : public AHUD
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintImplementableEvent, Category = "WidgetController")
-	void InitializeAttributeWidget(USSAttributeWidgetController* InWidgetController);
+	void InitWidgets();
 
 protected:
-	virtual void BeginPlay() override;
+	UFUNCTION(BlueprintImplementableEvent, Category = "WidgetController")
+	void InitializeAttributeWidget(USSWidgetController* InWidgetController);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "WidgetController")
+	void InitializeScoreWidget(USSWidgetController* InWidgetController);
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WidgetController", meta = (AllowPrivateAccess = "true"))
@@ -30,6 +35,15 @@ private:
 	UPROPERTY()
 	TObjectPtr<USSAttributeWidgetController> AttributeWidgetController;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WidgetController", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<USSScoreWidgetController> ScoreWidgetControllerClass;
+
+	UPROPERTY()
+	TObjectPtr<USSScoreWidgetController> ScoreWidgetController;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<USSUserWidget> UserWidgetClass;
+	TSubclassOf<USSUserWidget> AttributeWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<USSUserWidget> ScoreWidgetClass;
 };

@@ -137,7 +137,7 @@ bool USSActionComponent::StopActionByTag(AActor* Instigator, const FGameplayTag&
 {
 	for (const TObjectPtr<USSAction>& Action : Actions)
 	{
-		if (!Action || !Action->GetActionTag().MatchesTag(ActionTag))
+		if (!Action || Action->GetActionTag() != ActionTag)
 		{
 			continue;
 		}

@@ -6,8 +6,6 @@
 #include "Interaction/SSInteractionHelperManager.h"
 #include "Interface/SSInteraction.h"
 
-static TAutoConsoleVariable<bool> CVarDebugDrawInteraction(TEXT("SS.DebugDrawInteraction"), false, TEXT("Enable Debug Lines for Interact Component."), ECVF_Cheat);
-
 USSInteractionComponent::USSInteractionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -48,13 +46,6 @@ void USSInteractionComponent::FindTargetActor(APawn* InOwner)
 		CollisionParams
 	);
 
-	const bool bDebugDraw = CVarDebugDrawInteraction.GetValueOnGameThread();
-
-	if (bDebugDraw)
-	{
-		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, bHit ? FColor::Green : FColor::Red, false, 0.1f, 0, 1.0f);
-	}
-
 	if (bHit)
 	{
 		for (const FHitResult& Result : Hits)
@@ -62,11 +53,6 @@ void USSInteractionComponent::FindTargetActor(APawn* InOwner)
 			if (AActor* HitActor = Result.GetActor();
 				HitActor->Implements<USSInteraction>())
 			{
-				if (bDebugDraw)
-				{
-					DrawDebugSphere(GetWorld(), Result.ImpactPoint, TraceRadius, 12, FColor::Blue, false, 0.1f);
-				}
-
 				TargetActor = HitActor;
 				break;
 			}

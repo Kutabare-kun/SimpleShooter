@@ -13,6 +13,11 @@ class ASimpleShooterGameMode : public AGameModeBase
 
 public:
 	ASimpleShooterGameMode();
+
+	void OnKillActor(AActor* Victim, AActor* Killer);
+
+protected:
+	void RespawnPlayer_Elapsed(AController* InController);
 };
 
 

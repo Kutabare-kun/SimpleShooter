@@ -3,7 +3,6 @@
 
 #include "Interaction/SSInteractionWorldWidget.h"
 
-#include "Camera/CameraComponent.h"
 #include "Component/SSInteractWidgetComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PowerUp/SSPowerUp.h"
@@ -38,10 +37,8 @@ void USSInteractionWorldWidget::Interaction_Implementation(APawn* InOwner, AActo
 	ASSPowerUp* PowerUp = Cast<ASSPowerUp>(InTargetActor);
 	if (!PowerUp) return;
 
-	const UCameraComponent* CameraComponent = InOwner->FindComponentByClass<UCameraComponent>();
-	if (!CameraComponent) return;
-
-	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(InteractWidgetComponent->GetComponentLocation(), CameraComponent->GetComponentLocation());
+	const FVector ViewLocation = InOwner->GetPawnViewLocation();
+	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(InteractWidgetComponent->GetComponentLocation(), ViewLocation);
 	InteractWidgetComponent->SetRelativeRotation(TargetRotation);
 
 	InteractWidgetComponent->SetInteractable(PowerUp);

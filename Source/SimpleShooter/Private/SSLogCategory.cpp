@@ -1,0 +1,8 @@
+﻿#include "SSLogCategory.h"
+
+DEFINE_LOG_CATEGORY(LogSSAction);
+
+DEFINE_LOG_CATEGORY(LogSSBaseProjectile);
+
+DEFINE_LOG_CATEGORY(LogSSHUD);
+

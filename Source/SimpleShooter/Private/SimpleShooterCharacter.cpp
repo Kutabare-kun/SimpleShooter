@@ -9,10 +9,12 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "SSLogCategory.h"
 #include "Component/SSActionComponent.h"
 #include "Component/SSAttributeComponent.h"
 #include "Component/SSInteractionComponent.h"
 #include "Input/SSEnhancedInputComponent.h"
+#include "Player/SSPlayerController.h"
 #include "UI/WidgetController/SSAttributeWidgetController.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -102,6 +104,13 @@ void ASimpleShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	}
 }
 
+void ASimpleShooterCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	AttributeComponent->OnHealthChanged.AddUniqueDynamic(this, &ThisClass::OnHealthChanged);
+}
+
 void ASimpleShooterCharacter::ActionInputTagPressed(FGameplayTag InputTag)
 {
 	ActionComponent->StartActionByTag(this, InputTag);
@@ -115,6 +124,24 @@ void ASimpleShooterCharacter::ActionInputTagReleased(FGameplayTag InputTag)
 FVector ASimpleShooterCharacter::GetPawnViewLocation() const
 {
 	return FollowCamera ? FollowCamera->GetComponentLocation() : Super::GetPawnViewLocation();
+}
+
+void ASimpleShooterCharacter::OnHealthChanged(AActor* InstigatorActor, USSAttributeComponent* OwningComponent, float Health, float Delta)
+{
+	if (!FMath::IsNearlyZero(Health) || Delta > 0.0f)
+	{
+		return;
+	}
+
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (!PC)
+	{
+		SS_LOG(LogTemplateCharacter, Error, TEXT("PlayerController is null"));
+		return;
+	}
+
+	DisableInput(PC);
+	SetLifeSpan(10.0f);
 }
 
 void ASimpleShooterCharacter::Move(const FInputActionValue& Value)
