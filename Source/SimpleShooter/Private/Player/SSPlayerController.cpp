@@ -8,7 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "UI/HUD/SSHUD.h"
 
-void ASSPlayerController::ClientInitOverlay_Implementation()
+void ASSPlayerController::InitOverlay() const
 {
 	ASSHUD* ThisHUD = GetHUD<ASSHUD>();
 	if (!ThisHUD)
@@ -17,6 +17,17 @@ void ASSPlayerController::ClientInitOverlay_Implementation()
 	}
 
 	ThisHUD->InitWidgets();
+}
+
+void ASSPlayerController::UpdateOverlay() const
+{
+	const ASSHUD* ThisHUD = GetHUD<ASSHUD>();
+	if (!ThisHUD)
+	{
+		return;
+	}
+
+	ThisHUD->UpdateBindWidgets();
 }
 
 void ASSPlayerController::ClientShowDamage_Implementation(AActor* Target, const float DamageAmount)
@@ -53,12 +64,26 @@ void ASSPlayerController::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	ClientInitOverlay();
+	InitOverlay();
 }
 
 void ASSPlayerController::BeginPlayingState()
 {
 	Super::BeginPlayingState();
 
-	ClientInitOverlay();
+	InitOverlay();
+}
+
+void ASSPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	UpdateOverlay();
+}
+
+void ASSPlayerController::OnRep_Pawn()
+{
+	Super::OnRep_Pawn();
+
+	UpdateOverlay();
 }

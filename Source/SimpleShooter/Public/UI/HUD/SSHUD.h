@@ -21,6 +21,8 @@ class SIMPLESHOOTER_API ASSHUD : public AHUD
 public:
 	void InitWidgets();
 
+	void UpdateBindWidgets() const;
+
 protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "WidgetController")
 	void InitializeAttributeWidget(USSWidgetController* InWidgetController);

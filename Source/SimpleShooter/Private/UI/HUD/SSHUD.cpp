@@ -3,7 +3,6 @@
 
 #include "UI/HUD/SSHUD.h"
 
-#include "SSLogCategory.h"
 #include "UI/WidgetController/SSAttributeWidgetController.h"
 #include "GameFramework/PlayerState.h"
 #include "UI/WidgetController/SSScoreWidgetController.h"
@@ -52,6 +51,31 @@ void ASSHUD::InitWidgets()
 	InitializeScoreWidget(ScoreWidgetController);
 
 	ScoreWidgetController->SetWidgetControllerParams(WidgetControllerParams);
+	ScoreWidgetController->BindCallbacksToDependencies();
+	ScoreWidgetController->BroadcastInitialValues();
+}
+
+void ASSHUD::UpdateBindWidgets() const
+{
+	APlayerController* PlayerController = GetOwningPlayerController();
+	if (!PlayerController)
+	{
+		return;
+	}
+
+	const FWidgetControllerParams WidgetControllerParams{
+		PlayerController,
+		PlayerController->GetPlayerState<APlayerState>()
+	};
+
+	if (!WidgetControllerParams.PlayerState)
+	{
+		return;
+	}
+
+	AttributeWidgetController->BindCallbacksToDependencies();
+	AttributeWidgetController->BroadcastInitialValues();
+
 	ScoreWidgetController->BindCallbacksToDependencies();
 	ScoreWidgetController->BroadcastInitialValues();
 }

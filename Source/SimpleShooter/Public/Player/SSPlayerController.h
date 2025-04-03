@@ -17,15 +17,19 @@ class SIMPLESHOOTER_API ASSPlayerController : public APlayerController
 
 public:
 	UFUNCTION(Client, Reliable)
-	void ClientInitOverlay();
-
-	UFUNCTION(Client, Reliable)
 	void ClientShowDamage(AActor* Target, const float DamageAmount);
 
 	virtual void OnRep_PlayerState() override;
 
 protected:
+	void InitOverlay() const;
+	void UpdateOverlay() const;
+
 	virtual void BeginPlayingState() override;
+
+	virtual void OnPossess(APawn* InPawn) override;
+
+	virtual void OnRep_Pawn() override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	TSubclassOf<USSDamageTextComponent> DamageTextComponentClass;
